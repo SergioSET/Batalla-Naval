@@ -5,6 +5,7 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Vector;
 
 public class GUIGridBagLayout extends JFrame {
 
@@ -13,8 +14,12 @@ public class GUIGridBagLayout extends JFrame {
     private JPanel tableroJugador, tableroMaquina;
     public ModelBatallaNaval mimodeloBatallaNaval;
     private Barco miBarcoGui;
+    public JLabel labelAyudante = new JLabel();
+    public static int posicionx;
+    public static int posiciony;
+    public Vector<Integer> posiciones = new Vector<Integer>(2);
 
-    public JLabel[][] matrizLabel = new JLabel[11][11];
+    public static JLabel[][] matrizLabel = new JLabel[11][11];
 
     public GUIGridBagLayout() {
 
@@ -25,7 +30,7 @@ public class GUIGridBagLayout extends JFrame {
         //this.setBackground(new Color(255, 255, 255, 0));
         this.setSize(new Dimension(1200, 600));
         this.pack();
-        this.setResizable(true);
+        this.setResizable(false);
         this.setVisible(true);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -68,7 +73,10 @@ public class GUIGridBagLayout extends JFrame {
                         matrizLabel[i][j].setBounds(30 + j * 30, 30 + i * 30, 30, 30);
                         matrizLabel[i][j].setBackground(Color.cyan);
                         matrizLabel[i][j].setPreferredSize(new Dimension(30, 30));
-                        matrizLabel[i][j].addMouseListener(escucha);
+                        if (i == 0 || j == 0) {
+                        } else {
+                            matrizLabel[i][j].addMouseListener(escucha);
+                        }
                         tableroJugador.add(matrizLabel[i][j]);
                     }
                 }
@@ -109,6 +117,8 @@ public class GUIGridBagLayout extends JFrame {
             constraints.fill = GridBagConstraints.HORIZONTAL;
             add(tableroMaquina, constraints);
         }
+
+        //mimodeloBatallaNaval.inicializarPosicionesLibres();
     }
 
     public static void main(String[] args) {
@@ -121,57 +131,66 @@ public class GUIGridBagLayout extends JFrame {
         @Override
         public void mouseClicked(MouseEvent e) {
 
-
             /*
             Fragatas = Color.BLACK
             Submarinos = Color.WHITE
             Destructores = Color.GREEN
             Portaaviones = Color.YELLOW
-
             */
-
-            Color colorAPoner = null;
 
             mimodeloBatallaNaval.calcularEstado();
 
             if (mimodeloBatallaNaval.estado == 0) {
-                if (miBarcoGui.fragatas.length < 5) {
-                    for (int i = 0; i < 11; i++) {
-                        for (int j = 0; j < 11; j++) {
-                            if (e.getSource().equals(matrizLabel[i][j])) {
-                                matrizLabel[i][j].setBackground(Color.black);
-                            }
-                        }
-                    }
-                } else if (miBarcoGui.submarinos.length < 4) {
-                    for (int i = 0; i < 11; i++) {
-                        for (int j = 0; j < 11; j++) {
-                            if (e.getSource().equals(matrizLabel[i][j])) {
-                                matrizLabel[i][j].setBackground(Color.WHITE);
-                            }
-                        }
-                    }
-                } else if (miBarcoGui.destructores.length < 3) {
-                    for (int i = 0; i < 11; i++) {
-                        for (int j = 0; j < 11; j++) {
-                            if (e.getSource().equals(matrizLabel[i][j])) {
-                                matrizLabel[i][j].setBackground(Color.GREEN);
-                            }
-                        }
-                    }
-                } else if (miBarcoGui.portaAviones.length < 2) {
-                    for (int i = 0; i < 11; i++) {
-                        for (int j = 0; j < 11; j++) {
-                            if (e.getSource().equals(matrizLabel[i][j])) {
-                                matrizLabel[i][j].setBackground(Color.YELLOW);
 
-                            }
+                for (int i = 0; i < 11; i++) {
+                    for (int j = 0; j < 11; j++) {
+                        if (e.getSource().equals(matrizLabel[i][j])) {
+                            posiciones.clear();
+                            posicionx = i;
+                            posiciony = j;
+                            posiciones.add(i);
+                            posiciones.add(j);
                         }
                     }
                 }
 
+                if (mimodeloBatallaNaval.posicionando == 0) {
+                    if (mimodeloBatallaNaval.sePuedePosicionar(posicionx, posiciony) == true) {
+                        matrizLabel[posicionx][posiciony].setBackground(Color.black);
+                        miBarcoGui.asignarPosicionFragatas(posicionx, posiciony);
+                    }
+                } else if (mimodeloBatallaNaval.posicionando == 1) {
+                    if (mimodeloBatallaNaval.sePuedePosicionar(posicionx, posiciony) == true) {
+                        matrizLabel[posicionx][posiciony].setBackground(Color.white);
+                        miBarcoGui.asignarPosicionesDestructores(posicionx, posiciony);
+                        if (mimodeloBatallaNaval.parteColocandoDestructores == 0) {
+                            mimodeloBatallaNaval.parteColocandoDestructores = 1;
+                        } else {
+                            mimodeloBatallaNaval.parteColocandoDestructores = 0;
+                        }
+                    }
+                } else if (mimodeloBatallaNaval.posicionando == 2) {
+                    if (mimodeloBatallaNaval.sePuedePosicionar(posicionx, posiciony) == true) {
+                        matrizLabel[posicionx][posiciony].setBackground(Color.green);
+                        miBarcoGui.asignarPosicionesSubmarinos(posicionx, posiciony);
+                        mimodeloBatallaNaval.parteColocandoSubmarino = mimodeloBatallaNaval.parteColocandoSubmarino + 1;
+                        if (mimodeloBatallaNaval.parteColocandoSubmarino == 3) {
+                            mimodeloBatallaNaval.parteColocandoSubmarino = 0;
+                        }
+                    }
+                } else if (mimodeloBatallaNaval.posicionando == 3) {
+                    if (mimodeloBatallaNaval.sePuedePosicionar(posicionx, posiciony) == true) {
+                        matrizLabel[posicionx][posiciony].setBackground(Color.YELLOW);
+                        miBarcoGui.asignarPosicionesPortaaviones(posicionx, posiciony);
+                        mimodeloBatallaNaval.parteColocandoPortaaviones = mimodeloBatallaNaval.parteColocandoPortaaviones + 1;
+                        if (mimodeloBatallaNaval.parteColocandoPortaaviones == 4) {
+                            mimodeloBatallaNaval.parteColocandoPortaaviones = 0;
+                        }
+                    }
+                }
+                mimodeloBatallaNaval.calcularPosicionando();
             } else if (mimodeloBatallaNaval.estado == 1) {
-
+                JOptionPane.showMessageDialog(null, "Hola, estás en el estado 1");
             } else {
 
             }
