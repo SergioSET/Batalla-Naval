@@ -9,17 +9,18 @@ import java.util.Vector;
 
 public class GUIGridBagLayout extends JFrame {
 
-    public Escucha escucha;
+    public static Escucha escucha;
     private Header headerProject;
     private JPanel tableroJugador, tableroMaquina;
     public ModelBatallaNaval mimodeloBatallaNaval;
     private Barco miBarcoGui;
+    private tableroPersonal miTableroPersonal;
+    private tableroCPU miTableroCPU;
     public JLabel labelAyudante = new JLabel();
     public static int posicionx;
     public static int posiciony;
     public Vector<Integer> posiciones = new Vector<Integer>(2);
-
-    public static JLabel[][] matrizLabel = new JLabel[11][11];
+    public JButton generarTableroCPU;
 
     public GUIGridBagLayout() {
 
@@ -44,6 +45,8 @@ public class GUIGridBagLayout extends JFrame {
         escucha = new Escucha();
         mimodeloBatallaNaval = new ModelBatallaNaval();
         miBarcoGui = new Barco();
+        miTableroCPU = new tableroCPU();
+        miTableroPersonal = new tableroPersonal();
         //Set up JComponents
 
         headerProject = new Header("Batalla Naval", Color.BLACK);
@@ -53,72 +56,26 @@ public class GUIGridBagLayout extends JFrame {
         constraints.fill = GridBagConstraints.HORIZONTAL;
         add(headerProject, constraints);
 
-        {
-            tableroJugador = new JPanel();
-            tableroJugador.setLayout(null);
-            tableroJugador.setPreferredSize(new Dimension(390, 390));
-            tableroJugador.setSize(390, 390);
-            tableroJugador.setBorder(BorderFactory.createTitledBorder("Tu tablero"));
-            constraints.gridx = 0;
-            constraints.gridy = 1;
-            constraints.gridwidth = 1;
-            constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        constraints.gridwidth = 1;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        add(miTableroPersonal, constraints);
 
-            {
-                for (int i = 0; i < 11; i++) {
-                    for (int j = 0; j < 11; j++) {
-                        matrizLabel[i][j] = new JLabel("", SwingConstants.CENTER);
-                        matrizLabel[i][j].setBorder(new LineBorder(Color.BLACK));
-                        matrizLabel[i][j].setOpaque(true);
-                        matrizLabel[i][j].setBounds(30 + j * 30, 30 + i * 30, 30, 30);
-                        matrizLabel[i][j].setBackground(Color.cyan);
-                        matrizLabel[i][j].setPreferredSize(new Dimension(30, 30));
-                        if (i == 0 || j == 0) {
-                        } else {
-                            matrizLabel[i][j].addMouseListener(escucha);
-                        }
-                        tableroJugador.add(matrizLabel[i][j]);
-                    }
-                }
-                matrizLabel[0][0].setText("*");
-                matrizLabel[0][1].setText("A");
-                matrizLabel[0][2].setText("B");
-                matrizLabel[0][3].setText("C");
-                matrizLabel[0][4].setText("D");
-                matrizLabel[0][5].setText("E");
-                matrizLabel[0][6].setText("F");
-                matrizLabel[0][7].setText("G");
-                matrizLabel[0][8].setText("H");
-                matrizLabel[0][9].setText("I");
-                matrizLabel[0][10].setText("J");
+        constraints.gridx = 1;
+        constraints.gridy = 1;
+        constraints.gridwidth = 1;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        add(miTableroCPU, constraints);
 
-                matrizLabel[1][0].setText("1");
-                matrizLabel[2][0].setText("2");
-                matrizLabel[3][0].setText("3");
-                matrizLabel[4][0].setText("4");
-                matrizLabel[5][0].setText("5");
-                matrizLabel[6][0].setText("6");
-                matrizLabel[7][0].setText("7");
-                matrizLabel[8][0].setText("8");
-                matrizLabel[9][0].setText("9");
-                matrizLabel[10][0].setText("10");
-            }
+        generarTableroCPU = new JButton("Generar");
+        constraints.gridx = 0;
+        constraints.gridy = 2;
+        constraints.gridwidth = 1;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        generarTableroCPU.addMouseListener(escucha);
+        add(generarTableroCPU, constraints);
 
-            add(tableroJugador, constraints);
-        }
-
-        {
-            tableroMaquina = new JPanel();
-            tableroMaquina.setPreferredSize(new Dimension(390, 390));
-            tableroMaquina.setBorder(BorderFactory.createTitledBorder("Tablero CPU"));
-            constraints.gridx = 1;
-            constraints.gridy = 1;
-            constraints.gridwidth = 1;
-            constraints.fill = GridBagConstraints.HORIZONTAL;
-            add(tableroMaquina, constraints);
-        }
-
-        //mimodeloBatallaNaval.inicializarPosicionesLibres();
     }
 
     public static void main(String[] args) {
@@ -144,7 +101,7 @@ public class GUIGridBagLayout extends JFrame {
 
                 for (int i = 0; i < 11; i++) {
                     for (int j = 0; j < 11; j++) {
-                        if (e.getSource().equals(matrizLabel[i][j])) {
+                        if (e.getSource().equals(tableroPersonal.matrizLabel[i][j])) {
                             posiciones.clear();
                             posicionx = i;
                             posiciony = j;
@@ -156,12 +113,12 @@ public class GUIGridBagLayout extends JFrame {
 
                 if (mimodeloBatallaNaval.posicionando == 0) {
                     if (mimodeloBatallaNaval.sePuedePosicionar(posicionx, posiciony) == true) {
-                        matrizLabel[posicionx][posiciony].setBackground(Color.black);
+                        tableroPersonal.matrizLabel[posicionx][posiciony].setBackground(Color.black);
                         miBarcoGui.asignarPosicionFragatas(posicionx, posiciony);
                     }
                 } else if (mimodeloBatallaNaval.posicionando == 1) {
                     if (mimodeloBatallaNaval.sePuedePosicionar(posicionx, posiciony) == true) {
-                        matrizLabel[posicionx][posiciony].setBackground(Color.white);
+                        tableroPersonal.matrizLabel[posicionx][posiciony].setBackground(Color.white);
                         miBarcoGui.asignarPosicionesDestructores(posicionx, posiciony);
                         if (mimodeloBatallaNaval.parteColocandoDestructores == 0) {
                             mimodeloBatallaNaval.parteColocandoDestructores = 1;
@@ -171,7 +128,7 @@ public class GUIGridBagLayout extends JFrame {
                     }
                 } else if (mimodeloBatallaNaval.posicionando == 2) {
                     if (mimodeloBatallaNaval.sePuedePosicionar(posicionx, posiciony) == true) {
-                        matrizLabel[posicionx][posiciony].setBackground(Color.green);
+                        tableroPersonal.matrizLabel[posicionx][posiciony].setBackground(Color.green);
                         miBarcoGui.asignarPosicionesSubmarinos(posicionx, posiciony);
                         mimodeloBatallaNaval.parteColocandoSubmarino = mimodeloBatallaNaval.parteColocandoSubmarino + 1;
                         if (mimodeloBatallaNaval.parteColocandoSubmarino == 3) {
@@ -180,7 +137,7 @@ public class GUIGridBagLayout extends JFrame {
                     }
                 } else if (mimodeloBatallaNaval.posicionando == 3) {
                     if (mimodeloBatallaNaval.sePuedePosicionar(posicionx, posiciony) == true) {
-                        matrizLabel[posicionx][posiciony].setBackground(Color.YELLOW);
+                        tableroPersonal.matrizLabel[posicionx][posiciony].setBackground(Color.YELLOW);
                         miBarcoGui.asignarPosicionesPortaaviones(posicionx, posiciony);
                         mimodeloBatallaNaval.parteColocandoPortaaviones = mimodeloBatallaNaval.parteColocandoPortaaviones + 1;
                         if (mimodeloBatallaNaval.parteColocandoPortaaviones == 4) {
@@ -188,9 +145,13 @@ public class GUIGridBagLayout extends JFrame {
                         }
                     }
                 }
+                System.out.println(posicionx + ", " + posiciony);
                 mimodeloBatallaNaval.calcularPosicionando();
             } else if (mimodeloBatallaNaval.estado == 1) {
                 JOptionPane.showMessageDialog(null, "Hola, estás en el estado 1");
+                if(e.getSource() == generarTableroCPU){
+                    tableroCPU.generarBarcos();
+                }
             } else {
 
             }

@@ -20,6 +20,22 @@ public class Barco {
     public int portaAvionesy[] = new int[4];
     static int contadorPortaaviones;
 
+    public int fragatasCPUx[] = new int[4];
+    public int fragatasCPUy[] = new int[4];
+    static int contadorFragataCPUs;
+
+    public int destructoresCPUx[] = new int[6];
+    public int destructoresCPUy[] = new int[6];
+    static int contadorDestructoresCPU;
+
+    public int submarinosCPUx[] = new int[6];
+    public int submarinosCPUy[] = new int[6];
+    static int contadorSubmarinosCPU;
+
+    public int portaAvionesCPUx[] = new int[4];
+    public int portaAvionesCPUy[] = new int[4];
+    static int contadorPortaavionesCPU;
+
     public static int vida;
 
     public int array[] = new int[2];
@@ -65,7 +81,7 @@ public class Barco {
             if (fragatasx[i] == 0) {
                 fragatasx[i] = array[0];
                 fragatasy[i] = array[1];
-                System.out.println(fragatasx[i] + ", " + fragatasy[i]);
+                //System.out.println(fragatasx[i] + ", " + fragatasy[i]);
                 i = fragatasx.length + 1;
             }
         }
@@ -80,7 +96,7 @@ public class Barco {
             if (destructoresx[i] == 0) {
                 destructoresx[i] = array[0];
                 destructoresy[i] = array[1];
-                System.out.println(destructoresx[i] + ", " + destructoresy[i]);
+                //System.out.println(destructoresx[i] + ", " + destructoresy[i]);
                 i = destructoresx.length + 1;
             }
         }
@@ -95,7 +111,7 @@ public class Barco {
             if (submarinosx[i] == 0) {
                 submarinosx[i] = array[0];
                 submarinosy[i] = array[1];
-                System.out.println(submarinosx[i] + ", " + submarinosy[i]);
+                //System.out.println(submarinosx[i] + ", " + submarinosy[i]);
                 i = submarinosx.length + 1;
             }
         }
@@ -110,7 +126,7 @@ public class Barco {
             if (portaAvionesx[i] == 0) {
                 portaAvionesx[i] = array[0];
                 portaAvionesy[i] = array[1];
-                System.out.println(portaAvionesx[i] + ", " + portaAvionesy[i]);
+                //System.out.println(portaAvionesx[i] + ", " + portaAvionesy[i]);
                 i = portaAvionesx.length + 1;
             }
         }
