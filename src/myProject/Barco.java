@@ -20,22 +20,6 @@ public class Barco {
     public int portaAvionesy[] = new int[4];
     static int contadorPortaaviones;
 
-    public int fragatasCPUx[] = new int[4];
-    public int fragatasCPUy[] = new int[4];
-    static int contadorFragataCPUs;
-
-    public int destructoresCPUx[] = new int[6];
-    public int destructoresCPUy[] = new int[6];
-    static int contadorDestructoresCPU;
-
-    public int submarinosCPUx[] = new int[6];
-    public int submarinosCPUy[] = new int[6];
-    static int contadorSubmarinosCPU;
-
-    public int portaAvionesCPUx[] = new int[4];
-    public int portaAvionesCPUy[] = new int[4];
-    static int contadorPortaavionesCPU;
-
     public static int vida;
 
     public int array[] = new int[2];

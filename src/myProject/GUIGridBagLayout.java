@@ -148,12 +148,12 @@ public class GUIGridBagLayout extends JFrame {
                 System.out.println(posicionx + ", " + posiciony);
                 mimodeloBatallaNaval.calcularPosicionando();
             } else if (mimodeloBatallaNaval.estado == 1) {
-                JOptionPane.showMessageDialog(null, "Hola, estás en el estado 1");
-                if(e.getSource() == generarTableroCPU){
-                    tableroCPU.generarBarcos();
-                }
+
             } else {
 
+            }
+            if (e.getSource() == generarTableroCPU) {
+                miTableroCPU.generarBarcos();
             }
         }
 

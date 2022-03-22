@@ -153,20 +153,83 @@ public class ModelBatallaNaval {
             case 3:
                 if (parteColocandoPortaaviones == 0) {
                     if ((verificarArriba(i, j, 1) == true && verificarArriba(i, j, 2) == true && verificarArriba(i, j, 3) == true) || (verificarAbajo(i, j, 1) == true && verificarAbajo(i, j, 2) == true && verificarAbajo(i, j, 3) == true)) {
+                        valor = true;
+                    } else {
                         if ((verificarDerecha(i, j, 1) == true && verificarDerecha(i, j, 2) == true && verificarDerecha(i, j, 3) == true) || (verificarIzquierda(i, j, 1) == true && verificarIzquierda(i, j, 2) == true && verificarIzquierda(i, j, 3) == true)) {
+                            valor = true;
+                        } else {
+                            if ((verificarDerecha(i, j, 1) == true && verificarDerecha(i, j, 2) == true && verificarDerecha(i, j, 3) == true) || (verificarIzquierda(i, j, 1) == true && verificarIzquierda(i, j, 2) == true && verificarIzquierda(i, j, 3) == true)) {
+                                valor = true;
+                            } else {
+                                if ((verificarArriba(i, j, 1) == true && verificarAbajo(i, j, 2) == true) || (verificarArriba(i, j, 2) == true && verificarAbajo(i, j, 1) == true)) {
+                                    valor = true;
+                                } else if ((verificarDerecha(i, j, 1) == true && verificarIzquierda(i, j, 2) == true) || (verificarDerecha(i, j, 2) == true && verificarIzquierda(i, j, 1) == true)) {
+                                    valor = true;
+                                } else {
+                                    valor = false;
+                                }
+                            }
+                        }
+
+                    }
+                } else if (parteColocandoPortaaviones == 1) {
+                    if (barcoVertical) {
+                        if (verificarArriba(i, j, 1) == true || verificarAbajo(i, j, 1) == true) {
+                            return true;
+                        } else {
+                            if ((verificarArriba(i, j, 1) == true && verificarAbajo(i, j, 3) == true) || (verificarArriba(i, j, 3) == true && verificarAbajo(i, j, 1) == true)) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        }
+                    } else {
+                        if (verificarDerecha(i, j, 1) == true || verificarIzquierda(i, j, 1) == true) {
+                            return true;
+                        } else {
+                            if ((verificarDerecha(i, j, 1) == true && verificarIzquierda(i, j, 3) == true) || (verificarDerecha(i, j, 3) == true && verificarIzquierda(i, j, 1) == true)) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        }
+                    }
+                } else if (parteColocandoPortaaviones == 2) {
+                    if (barcoVertical) {
+                        if (verificarArriba(i, j, 1) == true || verificarAbajo(i, j, 1) == true) {
+                            return true;
+                        } else {
+                            if ((verificarArriba(i, j, 1) == true && verificarAbajo(i, j, 2) == true) || (verificarArriba(i, j, 2) == true && verificarAbajo(i, j, 1) == true)) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        }
+                    } else {
+                        if (verificarDerecha(i, j, 1) == true || verificarIzquierda(i, j, 1) == true) {
+                            return true;
+                        } else {
+                            if ((verificarDerecha(i, j, 1) == true && verificarIzquierda(i, j, 2) == true) || (verificarDerecha(i, j, 2) == true && verificarIzquierda(i, j, 1) == true)) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        }
+                    }
+                } else if (parteColocandoPortaaviones == 3) {
+                    if (barcoVertical) {
+                        if (verificarArriba(i, j, 1) == true || verificarAbajo(i, j, 1) == true) {
                             valor = true;
                         } else {
                             valor = false;
                         }
                     } else {
-                        valor = false;
+                        if (verificarDerecha(i, j, 1) == true || verificarIzquierda(i, j, 1) == true) {
+                            valor = true;
+                        } else {
+                            valor = false;
+                        }
                     }
-                } else if (parteColocandoPortaaviones == 1) {
-
-                } else if (parteColocandoPortaaviones == 2) {
-
-                } else if (parteColocandoPortaaviones == 3) {
-
                 }
                 break;
             default:
