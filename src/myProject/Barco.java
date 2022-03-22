@@ -91,7 +91,7 @@ public class Barco {
         array[1] = y;
         contadorSubmarinos = contadorSubmarinos + 1;
         System.out.println("Submarinos");
-        for (int i = 0; i < destructoresx.length; i++) {
+        for (int i = 0; i < submarinosx.length; i++) {
             if (submarinosx[i] == 0) {
                 submarinosx[i] = array[0];
                 submarinosy[i] = array[1];
@@ -106,7 +106,7 @@ public class Barco {
         array[1] = y;
         contadorPortaaviones = contadorPortaaviones + 1;
         System.out.println("Portaaviones");
-        for (int i = 0; i < destructoresx.length; i++) {
+        for (int i = 0; i < portaAvionesx.length; i++) {
             if (portaAvionesx[i] == 0) {
                 portaAvionesx[i] = array[0];
                 portaAvionesy[i] = array[1];

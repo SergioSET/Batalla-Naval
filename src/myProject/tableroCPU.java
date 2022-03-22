@@ -7,26 +7,24 @@ import java.util.Random;
 import java.util.Vector;
 
 public class tableroCPU extends JPanel {
-
-    public ModelBatallaNaval miModeloBatallaNaval = new ModelBatallaNaval();
     public Barco miBarco = new Barco();
     public JLabel[][] matrizLabelCPU = new JLabel[11][11];
 
     public int fragatasCPUx[] = new int[4];
     public int fragatasCPUy[] = new int[4];
-    static int contadorFragataCPUs;
+    public static int contadorFragataCPUs;
 
     public int destructoresCPUx[] = new int[6];
     public int destructoresCPUy[] = new int[6];
-    static int contadorDestructoresCPU;
+    public static int contadorDestructoresCPU;
 
     public int submarinosCPUx[] = new int[6];
     public int submarinosCPUy[] = new int[6];
-    static int contadorSubmarinosCPU;
+    public static int contadorSubmarinosCPU;
 
     public int portaAvionesCPUx[] = new int[4];
     public int portaAvionesCPUy[] = new int[4];
-    static int contadorPortaavionesCPU;
+    public static int contadorPortaavionesCPU;
 
     public int posicionando;
 
@@ -50,6 +48,12 @@ public class tableroCPU extends JPanel {
     public Vector<Integer> posicionTercera = new Vector<Integer>(2);
     public Vector<Vector<Integer>> posicionesPosibles = new Vector<Vector<Integer>>();
 
+    int numeroRandomI;
+    int numeroRandomJ;
+    int posibleAleatorio = 0;
+    Vector<Integer> posicionElegida = new Vector<Integer>();
+
+    Random aleatorio = new Random();
 
     public tableroCPU() {
 
@@ -102,31 +106,119 @@ public class tableroCPU extends JPanel {
     }
 
     public void generarBarcos() {
-        generarFragatas();
-        generarDestructores();
-        generarSubmarinos();
-        generarPortaaviones();
+        while (contadorSubmarinosCPU < 2) {
+            if (posicionando == 0) {
+                generarFragatas();
+            } else if (posicionando == 1) {
+                posicionesPosibles.clear();
+                generarDestructores();
+            } else if (posicionando == 2) {
+                posicionesPosibles.clear();
+                generarSubmarinos();
+            } else if (posicionando == 3) {
+                generarPortaaviones();
+            }
+        }
     }
 
     public void generarFragatas() {
 
-        Random aleatorio = new Random();
         int numeroRandomI = aleatorio.nextInt(10) + 1;
         int numeroRandomJ = aleatorio.nextInt(10) + 1;
 
         if (sePuedePosicionar(numeroRandomI, numeroRandomJ) == true) {
-            matrizLabelCPU[numeroRandomI][numeroRandomJ].setBackground(Color.black);
-            asignarPosicionFragatas(numeroRandomI, numeroRandomJ);
+            if (matrizLabelCPU[numeroRandomI][numeroRandomJ].getBackground() == Color.cyan) {
+                matrizLabelCPU[numeroRandomI][numeroRandomJ].setBackground(Color.black);
+                System.out.println("Posicion Fragatas: " + numeroRandomI + ", " + numeroRandomJ);
+                asignarPosicionFragatas(numeroRandomI, numeroRandomJ);
+            } else {
+                generarFragatas();
+            }
         }
-        System.out.println(numeroRandomI + "numero aleatorio" + numeroRandomJ);
+        calcularPosicionando();
     }
 
     public void generarDestructores() {
 
+        numeroRandomI = aleatorio.nextInt(10) + 1;
+        numeroRandomJ = aleatorio.nextInt(10) + 1;
+
+        if (parteColocandoDestructores == 0) {
+            if (sePuedePosicionar(numeroRandomI, numeroRandomJ) == true) {
+                matrizLabelCPU[numeroRandomI][numeroRandomJ].setBackground(Color.white);
+                System.out.println("Primera posición Destructor: " + numeroRandomI + ", " + numeroRandomJ);
+                asignarPosicionesDestructores(numeroRandomI, numeroRandomJ);
+                parteColocandoDestructores = 1;
+                generarDestructores();
+            } else {
+                generarDestructores();
+            }
+
+        } else {
+            posibleAleatorio = aleatorio.nextInt((posicionesPosibles.size() - 0) + 0) + 0;
+            posicionElegida = posicionesPosibles.get(posibleAleatorio);
+            numeroRandomI = posicionElegida.get(0);
+            numeroRandomJ = posicionElegida.get(1);
+            if (sePuedePosicionar(numeroRandomI, numeroRandomJ) == true) {
+                matrizLabelCPU[numeroRandomI][numeroRandomJ].setBackground(Color.white);
+                System.out.println("Segunda posición Destructor: " + numeroRandomI + ", " + numeroRandomJ);
+                asignarPosicionesDestructores(numeroRandomI, numeroRandomJ);
+                parteColocandoDestructores = 0;
+                posicionesPosibles.clear();
+            } else {
+                generarDestructores();
+            }
+        }
+        calcularPosicionando();
     }
+
 
     public void generarSubmarinos() {
 
+        numeroRandomI = aleatorio.nextInt(10) + 1;
+        numeroRandomJ = aleatorio.nextInt(10) + 1;
+
+        if (parteColocandoSubmarino == 0) {
+            if (sePuedePosicionar(numeroRandomI, numeroRandomJ) == true) {
+                matrizLabelCPU[numeroRandomI][numeroRandomJ].setBackground(Color.green);
+                System.out.println("Primera posición Submarino: " + numeroRandomI + ", " + numeroRandomJ);
+                asignarPosicionesDestructores(numeroRandomI, numeroRandomJ);
+                parteColocandoSubmarino = parteColocandoSubmarino + 1;
+                generarSubmarinos();
+            } else {
+                generarSubmarinos();
+            }
+        } else if (parteColocandoSubmarino == 1) {
+            posibleAleatorio = aleatorio.nextInt((posicionesPosibles.size() - 0) + 0) + 0;
+            posicionElegida = posicionesPosibles.get(posibleAleatorio);
+            numeroRandomI = posicionElegida.get(0);
+            numeroRandomJ = posicionElegida.get(1);
+            if (sePuedePosicionar(numeroRandomI, numeroRandomJ) == true) {
+                matrizLabelCPU[numeroRandomI][numeroRandomJ].setBackground(Color.green);
+                System.out.println("Segunda posición Submarino: " + numeroRandomI + ", " + numeroRandomJ);
+                posicionesPosibles.clear();
+                asignarPosicionesSubmarinos(numeroRandomI, numeroRandomJ);
+                parteColocandoSubmarino = parteColocandoSubmarino + 1;
+                generarSubmarinos();
+            } else {
+                generarSubmarinos();
+            }
+        } else {
+            posibleAleatorio = aleatorio.nextInt((posicionesPosibles.size() - 0) + 0) + 0;
+            posicionElegida = posicionesPosibles.get(posibleAleatorio);
+            numeroRandomI = posicionElegida.get(0);
+            numeroRandomJ = posicionElegida.get(1);
+            if (sePuedePosicionar(numeroRandomI, numeroRandomJ) == true) {
+                matrizLabelCPU[numeroRandomI][numeroRandomJ].setBackground(Color.green);
+                System.out.println("Tercera posición Submarino: " + numeroRandomI + ", " + numeroRandomJ);
+                asignarPosicionesSubmarinos(numeroRandomI, numeroRandomJ);
+                parteColocandoSubmarino = 0;
+                posicionesPosibles.clear();
+            } else {
+                generarSubmarinos();
+            }
+        }
+        calcularPosicionando();
     }
 
     public void generarPortaaviones() {
@@ -136,8 +228,7 @@ public class tableroCPU extends JPanel {
     public void asignarPosicionFragatas(int x, int y) {
         array[0] = x;
         array[1] = y;
-        contadorFragataCPUs = contadorFragataCPUs+ 1;
-        System.out.println("Fragatas");
+        contadorFragataCPUs = contadorFragataCPUs + 1;
         for (int i = 0; i < fragatasCPUx.length; i++) {
             if (fragatasCPUx[i] == 0) {
                 fragatasCPUx[i] = array[0];
@@ -147,6 +238,49 @@ public class tableroCPU extends JPanel {
             }
         }
     }
+
+    public void asignarPosicionesDestructores(int x, int y) {
+        array[0] = x;
+        array[1] = y;
+        contadorDestructoresCPU = contadorDestructoresCPU + 1;
+        for (int i = 0; i < destructoresCPUx.length; i++) {
+            if (destructoresCPUx[i] == 0) {
+                destructoresCPUx[i] = array[0];
+                destructoresCPUy[i] = array[1];
+                //System.out.println(destructoresx[i] + ", " + destructoresy[i]);
+                i = destructoresCPUx.length + 1;
+            }
+        }
+    }
+
+    public void asignarPosicionesSubmarinos(int x, int y) {
+        array[0] = x;
+        array[1] = y;
+        contadorSubmarinosCPU = contadorSubmarinosCPU + 1;
+        for (int i = 0; i < submarinosCPUx.length; i++) {
+            if (destructoresCPUx[i] == 0) {
+                destructoresCPUx[i] = array[0];
+                destructoresCPUy[i] = array[1];
+                //System.out.println(submarinosx[i] + ", " + submarinosy[i]);
+                i = destructoresCPUx.length + 1;
+            }
+        }
+    }
+
+    public void asignarPosicionesPortaaviones(int x, int y) {
+        array[0] = x;
+        array[1] = y;
+        contadorPortaavionesCPU = contadorPortaavionesCPU + 1;
+        for (int i = 0; i < portaAvionesCPUx.length; i++) {
+            if (portaAvionesCPUx[i] == 0) {
+                portaAvionesCPUx[i] = array[0];
+                portaAvionesCPUy[i] = array[1];
+                //System.out.println(portaAvionesx[i] + ", " + portaAvionesy[i]);
+                i = portaAvionesCPUx.length + 1;
+            }
+        }
+    }
+
 
     public void calcularPosicionando() {
         if (contadorFragataCPUs < 4) {
@@ -161,8 +295,6 @@ public class tableroCPU extends JPanel {
         } else if (contadorPortaavionesCPU < 4) {
             posicionando = 3;
             colorPoniendo = Color.yellow;
-        } else {
-            posicionando = 4;
         }
     }
 
@@ -194,58 +326,81 @@ public class tableroCPU extends JPanel {
                 break;
             case 2:
                 if (parteColocandoSubmarino == 0) {
-                    if ((verificarArriba(i, j, 1) == true && verificarArriba(i, j, 2) == true) || (verificarAbajo(i, j, 1) == true && verificarAbajo(i, j, 2) == true)) {
-                        valor = true;
-                    } else {
-                        if ((verificarDerecha(i, j, 1) == true && verificarDerecha(i, j, 2) == true) || (verificarIzquierda(i, j, 1) == true && verificarIzquierda(i, j, 2) == true)) {
+                    if (verificarArriba(i, j, 1)) {
+                        if (verificarArriba(i, j, 2)) {
                             valor = true;
-                        } else {
-                            if (verificarArriba(i, j, 1) == true && verificarAbajo(i, j, 1) == true) {
-                                valor = true;
-                            } else if (verificarDerecha(i, j, 1) == true && verificarIzquierda(i, j, 1) == true) {
-                                valor = true;
-                            } else {
-                                valor = false;
-                            }
                         }
                     }
-                } else if (parteColocandoSubmarino == 1) {
-                    if (barcoVertical) {
-                        if (verificarArriba(i, j, 1) == true || verificarAbajo(i, j, 1) == true) {
-                            return true;
-                        } else {
-                            if ((verificarArriba(i, j, 1) == true && verificarAbajo(i, j, 2) == true) || (verificarArriba(i, j, 2) == true && verificarAbajo(i, j, 1) == true)) {
-                                return true;
-                            } else {
-                                return false;
-                            }
-                        }
-                    } else {
-                        if (verificarDerecha(i, j, 1) == true || verificarIzquierda(i, j, 1) == true) {
-                            return true;
-                        } else {
-                            if ((verificarDerecha(i, j, 1) == true && verificarIzquierda(i, j, 2) == true) || (verificarDerecha(i, j, 2) == true && verificarIzquierda(i, j, 1) == true)) {
-                                return true;
-                            } else {
-                                return false;
-                            }
+                    if (verificarAbajo(i, j, 1)) {
+                        if (verificarAbajo(i, j, 2)) {
+                            valor = true;
                         }
                     }
-                } else if (parteColocandoSubmarino == 2) {
-                    if (barcoVertical) {
-                        if (verificarArriba(i, j, 1) == true || verificarAbajo(i, j, 1) == true) {
+                    if (verificarDerecha(i, j, 1)) {
+                        if (verificarDerecha(i, j, 2)) {
                             valor = true;
-                        } else {
-                            valor = false;
                         }
-                    } else {
-                        if (verificarDerecha(i, j, 1) == true || verificarIzquierda(i, j, 1) == true) {
+                    }
+                    if (verificarIzquierda(i, j, 1)) {
+                        if (verificarIzquierda(i, j, 2)) {
                             valor = true;
-                        } else {
-                            valor = false;
                         }
                     }
                 }
+
+//                if (parteColocandoSubmarino == 0) {
+//                    if ((verificarArriba(i, j, 1) == true && verificarArriba(i, j, 2) == true) || (verificarAbajo(i, j, 1) == true && verificarAbajo(i, j, 2) == true)) {
+//                        valor = true;
+//                    } else {
+//                        if ((verificarDerecha(i, j, 1) == true && verificarDerecha(i, j, 2) == true) || (verificarIzquierda(i, j, 1) == true && verificarIzquierda(i, j, 2) == true)) {
+//                            valor = true;
+//                        } else {
+//                            if (verificarArriba(i, j, 1) == true && verificarAbajo(i, j, 1) == true) {
+//                                valor = true;
+//                            } else if (verificarDerecha(i, j, 1) == true && verificarIzquierda(i, j, 1) == true) {
+//                                valor = true;
+//                            } else {
+//                                valor = false;
+//                            }
+//                        }
+//                    }
+//                } else if (parteColocandoSubmarino == 1) {
+//                    if (barcoVertical) {
+//                        if (verificarArriba(i, j, 1) == true || verificarAbajo(i, j, 1) == true) {
+//                            return true;
+//                        } else {
+//                            if ((verificarArriba(i, j, 1) == true && verificarAbajo(i, j, 2) == true) || (verificarArriba(i, j, 2) == true && verificarAbajo(i, j, 1) == true)) {
+//                                return true;
+//                            } else {
+//                                return false;
+//                            }
+//                        }
+//                    } else {
+//                        if (verificarDerecha(i, j, 1) == true || verificarIzquierda(i, j, 1) == true) {
+//                            return true;
+//                        } else {
+//                            if ((verificarDerecha(i, j, 1) == true && verificarIzquierda(i, j, 2) == true) || (verificarDerecha(i, j, 2) == true && verificarIzquierda(i, j, 1) == true)) {
+//                                return true;
+//                            } else {
+//                                return false;
+//                            }
+//                        }
+//                    }
+//                } else if (parteColocandoSubmarino == 2) {
+//                    if (barcoVertical) {
+//                        if (verificarArriba(i, j, 1) == true || verificarAbajo(i, j, 1) == true) {
+//                            valor = true;
+//                        } else {
+//                            valor = false;
+//                        }
+//                    } else {
+//                        if (verificarDerecha(i, j, 1) == true || verificarIzquierda(i, j, 1) == true) {
+//                            valor = true;
+//                        } else {
+//                            valor = false;
+//                        }
+//                    }
+//                }
                 break;
             case 3:
                 if (parteColocandoPortaaviones == 0) {
@@ -332,7 +487,7 @@ public class tableroCPU extends JPanel {
             default:
                 break;
         }
-        System.out.println("Tiene vecinos diponibles: " + valor);
+//        System.out.println("Tiene vecinos diponibles: " + valor);
         return valor;
     }
 
@@ -340,13 +495,13 @@ public class tableroCPU extends JPanel {
         if (i + numero > 10) {
             return false;
         } else {
-            if (tableroPersonal.matrizLabel[i + numero][j].getBackground() == Color.cyan) {
+            if (matrizLabelCPU[i + numero][j].getBackground() == Color.cyan) {
                 return true;
-            } else if (tableroPersonal.matrizLabel[i + numero][j].getBackground() == colorPoniendo) {
-                System.out.println("Tiene disponible arriba");
+            } else if (matrizLabelCPU[i + numero][j].getBackground() == colorPoniendo) {
+//                System.out.println("Tiene disponible arriba");
                 return true;
             } else {
-                System.out.println("No tiene disponible arriba");
+//                System.out.println("No tiene disponible arriba");
                 return false;
             }
         }
@@ -356,13 +511,13 @@ public class tableroCPU extends JPanel {
         if (i - numero < 1) {
             return false;
         } else {
-            if (tableroPersonal.matrizLabel[i - numero][j].getBackground() == Color.cyan) {
+            if (matrizLabelCPU[i - numero][j].getBackground() == Color.cyan) {
                 return true;
-            } else if (tableroPersonal.matrizLabel[i - numero][j].getBackground() == colorPoniendo) {
-                System.out.println("Tiene disponible abajo");
+            } else if (matrizLabelCPU[i - numero][j].getBackground() == colorPoniendo) {
+//                System.out.println("Tiene disponible abajo");
                 return true;
             } else {
-                System.out.println("No tiene disponible abajo");
+//                System.out.println("No tiene disponible abajo");
                 return false;
             }
         }
@@ -372,10 +527,10 @@ public class tableroCPU extends JPanel {
         if (j + numero > 10) {
             return false;
         } else {
-            if (tableroPersonal.matrizLabel[i][j + numero].getBackground() == Color.cyan) {
+            if (matrizLabelCPU[i][j + numero].getBackground() == Color.cyan) {
                 return true;
-            } else if (tableroPersonal.matrizLabel[i][j + numero].getBackground() == colorPoniendo) {
-                System.out.println("Tiene disponible derecha");
+            } else if (matrizLabelCPU[i][j + numero].getBackground() == colorPoniendo) {
+//                System.out.println("Tiene disponible derecha");
                 return true;
             } else {
                 return false;
@@ -387,10 +542,10 @@ public class tableroCPU extends JPanel {
         if (j - numero < 1) {
             return false;
         } else {
-            if (tableroPersonal.matrizLabel[i][j - numero].getBackground() == Color.cyan) {
+            if (matrizLabelCPU[i][j - numero].getBackground() == Color.cyan) {
                 return true;
-            } else if (tableroPersonal.matrizLabel[i][j - numero].getBackground() == colorPoniendo) {
-                System.out.println("Tiene disponible izquierda");
+            } else if (matrizLabelCPU[i][j - numero].getBackground() == colorPoniendo) {
+//                System.out.println("Tiene disponible izquierda");
                 return true;
             } else {
                 return false;
@@ -465,25 +620,25 @@ public class tableroCPU extends JPanel {
                     posicionPrimera.add(primerox);
                     posicionPrimera.add(primeroy);
 
-                    if (primerox + 1 < 11) {
+                    if (primerox + 1 < 11 && matrizLabelCPU[primerox + 1][j].getBackground() == Color.cyan) {
                         posibleArriba.add(primerox + 1);
                         posibleArriba.add(primeroy);
                         vectorABorrarVertical.add(posibleArriba);
                         posicionesPosibles.add(posibleArriba);
                     }
-                    if (primerox - 1 > 0) {
+                    if (primerox - 1 > 0 && matrizLabelCPU[primerox + 1][j].getBackground() == Color.cyan) {
                         posibleAbajo.add(primerox - 1);
                         posibleAbajo.add(primeroy);
                         vectorABorrarVertical2.add(posibleAbajo);
                         posicionesPosibles.add(posibleAbajo);
                     }
-                    if (primeroy + 1 < 11) {
+                    if (primeroy + 1 < 11 && matrizLabelCPU[primerox + 1][j].getBackground() == Color.cyan) {
                         posibleDerecha.add(primerox);
                         posibleDerecha.add(primeroy + 1);
                         vectorABorrarHorizontal.add(posibleDerecha);
                         posicionesPosibles.add(posibleDerecha);
                     }
-                    if (primeroy - 1 > 0) {
+                    if (primeroy - 1 > 0 && matrizLabelCPU[primerox + 1][j].getBackground() == Color.cyan) {
                         posibleIzquierda.add(primerox);
                         posibleIzquierda.add(primeroy - 1);
                         vectorABorrarHorizontal2.add(posibleIzquierda);
@@ -530,26 +685,26 @@ public class tableroCPU extends JPanel {
                     if (posicionesPosibles.contains(posicionAuxiliar)) {
                         valor = true;
                         if (barcoVertical == true) {
-                            if (segundox + 1 < 11) {
+                            if (segundox + 1 < 11 && matrizLabelCPU[primerox + 1][j].getBackground() == Color.cyan) {
                                 posibleArriba.add(segundox + 1);
                                 posibleArriba.add(segundoy);
                                 vectorABorrarVertical.add(posibleArriba);
                                 posicionesPosibles.add(posibleArriba);
                             }
-                            if (segundox - 1 > 0) {
+                            if (segundox - 1 > 0 && matrizLabelCPU[primerox + 1][j].getBackground() == Color.cyan) {
                                 posibleAbajo.add(segundox - 1);
                                 posibleAbajo.add(segundoy);
                                 vectorABorrarVertical2.add(posibleAbajo);
                                 posicionesPosibles.add(posibleAbajo);
                             }
                         } else {
-                            if (segundoy + 1 < 11) {
+                            if (segundoy + 1 < 11 && matrizLabelCPU[primerox + 1][j].getBackground() == Color.cyan) {
                                 posibleDerecha.add(segundox);
                                 posibleDerecha.add(segundoy + 1);
                                 vectorABorrarHorizontal.add(posibleDerecha);
                                 posicionesPosibles.add(posibleDerecha);
                             }
-                            if (segundoy - 1 > 0) {
+                            if (segundoy - 1 > 0 && matrizLabelCPU[primerox + 1][j].getBackground() == Color.cyan) {
                                 posibleIzquierda.add(segundox);
                                 posibleIzquierda.add(segundoy - 1);
                                 vectorABorrarHorizontal2.add(posibleIzquierda);

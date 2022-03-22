@@ -145,7 +145,6 @@ public class GUIGridBagLayout extends JFrame {
                         }
                     }
                 }
-                System.out.println(posicionx + ", " + posiciony);
                 mimodeloBatallaNaval.calcularPosicionando();
             } else if (mimodeloBatallaNaval.estado == 1) {
 
@@ -154,6 +153,9 @@ public class GUIGridBagLayout extends JFrame {
             }
             if (e.getSource() == generarTableroCPU) {
                 miTableroCPU.generarBarcos();
+//                while(miTableroCPU.contadorDestructoresCPU<6){
+//
+//                }
             }
         }
 
